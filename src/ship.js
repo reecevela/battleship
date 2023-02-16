@@ -6,9 +6,16 @@ const Ship = (type) => {
     let sunk = false;
     const hit = () => {
         hits++;
+        if (hits >= length) {
+            sunk = true;
+        }
+        console.log({hits, sunk});
         return true;
     }
-    return {length, sunk, hit};
+    const isSunk = () => {
+        return sunk;
+    }
+    return {length, isSunk, hit};
 }
 
 export default Ship;
