@@ -2,6 +2,7 @@ import { SHIP_LENGTHS } from "./types";
 
 const Ship = (type) => {
     const length = SHIP_LENGTHS[type];
+    let name = type;
     let hits = 0;
     let sunk = false;
     const hit = () => {
@@ -9,13 +10,12 @@ const Ship = (type) => {
         if (hits >= length) {
             sunk = true;
         }
-        console.log({hits, sunk});
         return true;
     }
     const isSunk = () => {
         return sunk;
     }
-    return {length, isSunk, hit};
+    return {name, length, isSunk, hit};
 }
 
 export default Ship;

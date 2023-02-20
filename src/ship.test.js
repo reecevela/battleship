@@ -3,6 +3,9 @@ import Ship from "./ship";
 describe('Ship Factory', () => {
     describe('properties', () => {
         const ship = Ship('test');
+        test('name', () => {
+            expect(ship.name).toBe('test');
+        })
         test('length', () => {
             expect(ship.length).toBe(7);
         });

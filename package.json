@@ -28,6 +28,6 @@
     "node": "^19.6.0"
   },
   "jest": {
-    "verbose": false
+    "verbose": true
   }
 }
