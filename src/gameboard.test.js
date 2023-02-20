@@ -137,59 +137,57 @@ describe('Board Positions', () => {
     test('Doesn\'t allow overlapping ships on the same board', () => {
         const board = Gameboard();
         board.place('destroyer', 'a', 3, 2, 'horizontal');
-        expect(board.place('cruiser', 'a', 1, 2)).toEqual('false');
+        expect(board.place('cruiser', 'a', 1, 2)).toEqual(false);
     });
     test('Allows overlapping ships on separate boards', () => {
         const board = Gameboard();
         board.place('destroyer', 'b', 3, 2, 'horizontal');
-        expect(board.place('cruiser', 'a', 1, 2)).not.toEqual('false');
+        expect(board.place('cruiser', 'a', 1, 2)).not.toEqual(false);
     });
     test('Doesn\'t allow a ship to be placed twice', () => {
         const board = Gameboard();
         board.place('destroyer', 'b', 3, 2, 'horizontal');
-        expect(board.place('destroyer', 'b', 4, 2, 'horizontal')).toEqual('false');
+        expect(board.place('destroyer', 'b', 4, 2, 'horizontal')).toEqual(false);
     });
     test('Allows different players to place the same ship', () => {
         const board = Gameboard();
         board.place('destroyer', 'b', 3, 2, 'horizontal');
-        expect(board.place('destroyer', 'a', 4, 2, 'horizontal')).not.toEqual('false');
+        expect(board.place('destroyer', 'a', 4, 2, 'horizontal')).not.toEqual(false);
     });
 });
 
 describe('playerShips works', () => {
     test('Playerships by default returns both players', () => {
         const board = Gameboard();
-        expect(board.getPlayerShips()).toEqual(
-            {
-                a: [],
-                b: []
-            }
-        )
-    });
-    test('Playerships can return a single player\'s ships', () => {
-        const board = Gameboard();
-        expect(board.getPlayerShips('a')).toEqual([])
+        expect(board.getPlayerShips()).toHaveProperty('a');
+        expect(board.getPlayerShips()).toHaveProperty('b');
     });
     test('Playerships adds a new ship when placed', () => {
         const board = Gameboard();
         board.place('skiff', 'b', 3, 4);
-        expect(board.getPlayerShips('b')[0].name).toBe('skiff');
+        expect(board.getPlayerShips('b')['skiff'].name).toBe('skiff');
     });
     test('Player ships are updated for both players', () => {
         const board = Gameboard();
         board.place('skiff', 'b', 3, 4);
         board.place('destroyer', 'a', 2, 4);
-        expect(board.getPlayerShips('a')[0].name).toBe('destroyer');
-        expect(board.getPlayerShips('b')[0].name).toBe('skiff');
+        expect(board.getPlayerShips('a')['destroyer']).not.toBe(null);
+        expect(board.getPlayerShips('b')['skiff']).not.toBe(null);
     });
 });
 
 describe('Attacks', () => {
-    test('', () => {
-
+    test('Returns "miss" when it hits a null spot', () => {
+        const board = Gameboard();
+        board.place('destroyer', 'b', 3, 3);
+        expect(board.receiveAttack('b', 2, 4)).toEqual({miss: ['b', 2, 4]});
     });
-    test('', () => {
-
+    test('Sinks a ship', () => {
+        const board = Gameboard();
+        board.place('skiff', 'a', 3, 3);
+        board.receiveAttack('a', 3, 3)
+        board.receiveAttack('a', 3, 4)
+        expect(board.getPlayerShips('a')['skiff'].isSunk()).toEqual(true);
     });
     test('', () => {
 

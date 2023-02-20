@@ -3,8 +3,22 @@ import Ship from "./ship"
 
 const Gameboard = () => {
     const playerShips = {
-        a: [],
-        b: []
+        a: {
+            test: null,
+            skiff: null,
+            destroyer: null,
+            cruiser: null,
+            submarine: null,
+            carrier: null
+        },
+        b: {
+            test: null,
+            skiff: null,
+            destroyer: null,
+            cruiser: null,
+            submarine: null,
+            carrier: null
+        }
     };
     const getPlayerShips = (player = 'both') => {
         switch (player) {
@@ -49,12 +63,10 @@ const Gameboard = () => {
         if (SHIP_TYPES.indexOf(ship) != -1 ) { // check ship name exists
             const length = SHIP_LENGTHS[ship];
             // check ship hasn't been placed already
-            playerShips[player].forEach(element => {
-                if (element['name'] == ship) {
-                    return false;
-                }
-            });
-            // check locations
+            if (playerShips[player][ship] !== null) {
+                return false;
+            }
+            // check locations are actually on the game board
             if (
                 y < 0 || //too far up
                 x < 0 || //too far left
@@ -65,7 +77,21 @@ const Gameboard = () => {
             ) {
                 return false;
             }
-            // place ships 
+            // make sure ships wouldn't be overlapping
+            // by iterating through each empty space the ship would be taking
+            for (let i = 0; i < length; i++) {
+                if (rotation === 'vertical') {
+                    if (positions[player][y + i][x] != null) { 
+                        //might need a different check later for when hits and misses are implmented
+                        return false;
+                    }
+                } else {
+                    if (positions[player][y][x + i] != null) { 
+                        return false;
+                    }
+                }
+            }
+            // place ships (checked earlier so it doesn't have to be undone partway through)
             for (let i = 0; i < length; i++) {
                 if (rotation === 'vertical') {
                     positions[player][y + i][x] = ship;
@@ -73,12 +99,20 @@ const Gameboard = () => {
                     positions[player][y][x + i] = ship;
                 }
             }
-            playerShips[player].push(new Ship(ship));
+            // add ship
+            playerShips[player][ship] = new Ship(ship);
             return getPositions();
         } 
         return false;        
     } // end place() function
-    return {place, getPositions, getPlayerShips};
+    const receiveAttack = (targetPlayer, x, y) => {
+        const mark = positions[targetPlayer][y][x]
+        if (mark == null) {
+            return {miss: [targetPlayer, x, y]};
+        }
+        return playerShips[targetPlayer][mark].hit()
+    }
+    return {place, getPositions, getPlayerShips, receiveAttack};
 }
 
 export default Gameboard;
