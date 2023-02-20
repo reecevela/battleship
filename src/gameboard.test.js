@@ -125,6 +125,33 @@ describe('Attacks', () => {
         board.place('destroyer', 3, 3);
         expect(board.receiveAttack(2, 4)).toEqual({miss: [2, 4]});
     });
+    test('Doesn\'t shots to be off the board check 1', () => {
+        const board = Gameboard();
+        expect(board.receiveAttack(-1, 3)).toEqual(false);
+    });
+    test('Doesn\'t shots to be off the board check 2', () => {
+        const board = Gameboard();
+        expect(board.receiveAttack(1, -3)).toEqual(false);
+    });
+    test('Doesn\'t shots to be off the board check 3', () => {
+        const board = Gameboard();
+        expect(board.receiveAttack(11, 3)).toEqual(false);
+    });
+    test('Doesn\'t shots to be off the board check 3', () => {
+        const board = Gameboard();
+        expect(board.receiveAttack(1, 33)).toEqual(false);
+    });
+    test('Doesn\'t allow same spot to be hit multiple times', () => {
+        const board = Gameboard();
+        board.receiveAttack(3, 3);
+        expect(board.receiveAttack(3, 3)).toEqual(false);
+    });
+    test('Doesn\'t allow same spot on ship to be hit multiple times', () => {
+        const board = Gameboard();
+        board.place('skiff', 3, 3);
+        board.receiveAttack(3, 3);
+        expect(board.receiveAttack(3, 3)).toEqual(false);
+    });
     test('Sinks a ship', () => {
         const board = Gameboard();
         board.place('skiff', 3, 3);
@@ -132,7 +159,20 @@ describe('Attacks', () => {
         board.receiveAttack(3, 4)
         expect(board.getPlayerShips()['skiff'].isSunk()).toEqual(true);
     });
-    test('', () => {
-
+    test('Can tell when all ships are sunk', () => {
+        const board = Gameboard();
+        board.place('skiff', 3, 3);
+        board.receiveAttack(3, 3);
+        board.receiveAttack(3, 4);
+        board.place('submarine', 2, 1, 'horizontal');
+        board.receiveAttack(1, 2);
+        board.receiveAttack(2, 2);
+        board.receiveAttack(3, 2);
+        expect(board.allSunk()).toBe(true);
+    });
+    test('Doesn\'t think all ships are sunk by default', () => {
+        const board = Gameboard();
+        board.place('cruiser', 3, 3);
+        expect(board.allSunk()).toBe(false);
     });
 });

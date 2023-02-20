@@ -24,6 +24,6 @@ describe('Ship Factory', () => {
                 testShip.hit();
             }
             expect(testShip.isSunk()).toEqual(true);
-        })
+        });
     });
 });

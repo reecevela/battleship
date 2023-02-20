@@ -2,6 +2,7 @@ import { SHIP_TYPES, SHIP_LENGTHS } from "./types";
 import Ship from "./ship"
 
 const Gameboard = () => {
+    let shotsReceived = [];
     const playerShips = {
         test: null,
         skiff: null,
@@ -10,7 +11,7 @@ const Gameboard = () => {
         submarine: null,
         carrier: null
     };
-    const getPlayerShips = (player = 'both') => {
+    const getPlayerShips = () => {
         return playerShips;
     };
     const positions = [
@@ -27,6 +28,14 @@ const Gameboard = () => {
     ];
     const getPositions = () => {
         return positions;
+    }
+    const allSunk = () => {
+        for (const ship in playerShips) {
+            if(playerShips[ship] !== null && playerShips[ship].isSunk() == false) {
+                return false;
+            }
+        }
+        return true;
     }
     const place = (ship, y, x, rotation = 'vertical') => {
         if (SHIP_TYPES.indexOf(ship) != -1 ) { // check ship name exists
@@ -75,13 +84,26 @@ const Gameboard = () => {
         return false;        
     } // end place() function
     const receiveAttack = (x, y) => {
-        const mark = positions[y][x]
+        if (shotsReceived.includes(`${x} ${y}`)) {
+            return false;
+        }
+        // check locations are actually on the game board
+        if (
+            y < 0 || //too far up
+            x < 0 || //too far left
+            y > 9 || //too low also
+            x > 9 // too far to the right
+        ) {
+            return false;
+        }
+        shotsReceived.push(`${x} ${y}`);
+        const mark = positions[y][x];
         if (mark == null) {
             return {miss: [x, y]};
         }
         return playerShips[mark].hit()
     }
-    return {place, getPositions, getPlayerShips, receiveAttack};
+    return {place, getPositions, getPlayerShips, receiveAttack, allSunk};
 }
 
 export default Gameboard;
