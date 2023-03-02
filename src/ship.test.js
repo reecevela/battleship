@@ -7,7 +7,7 @@ describe('Ship Factory', () => {
             expect(ship.name).toBe('test');
         })
         test('length', () => {
-            expect(ship.length).toBe(7);
+            expect(ship.length).toBe(1);
         });
         test('not sunk', () => {
             expect(ship.isSunk()).toBe(false);

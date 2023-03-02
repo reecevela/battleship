@@ -3,6 +3,9 @@ import Ship from "./ship"
 
 const Gameboard = () => {
     let shotsReceived = [];
+    const getShotsReceived = () => {
+        return shotsReceived;
+    }
     const playerShips = {
         test: null,
         skiff: null,
@@ -103,7 +106,7 @@ const Gameboard = () => {
         }
         return playerShips[mark].hit()
     }
-    return {place, getPositions, getPlayerShips, receiveAttack, allSunk};
+    return {place, getPositions, getPlayerShips, receiveAttack, getShotsReceived, allSunk};
 }
 
 export default Gameboard;

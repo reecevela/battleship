@@ -8,7 +8,7 @@ export const SHIP_TYPES = [
 ];
 
 export const SHIP_LENGTHS = {
-    test: 7,
+    test: 1,
     skiff: 2,
     destroyer: 4,
     cruiser: 3,
