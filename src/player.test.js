@@ -37,26 +37,52 @@ describe('Player factory', () => {
         test('Player shots can sink the ships', () => {
             const p = Player('reece');
             const eBoard = Gameboard();
-            p.setBoard(eBoard);
+            p.setEnemyBoard(eBoard);
             eBoard.place('test', 0, 0);
             p.shoot(0,0);
             expect(eBoard.allSunk()).toBe(true);
         });
         test('Player.checkShot() work on empty spot', () => {
-
+            expect(p).toBe('tested');
         });
         test('Player can shoot a ship on a board', () => {
             const p = Player('reece');
-            expect(p)
+            expect(p).toBe('tested');
         });
-        
         test('AI Player makes shots by itself', () => {
             const p = Player('reece');
-            expect(p)
+            expect(p).toBe('tested');
         });
         test('AI Player doesn\'t repeat shots on the same spot', () => {
             const p = Player('reece');
-            expect(p)
+            expect(p).toBe('tested');
         });
+        test('Player will not shoot in same spot multiple times', () => {
+            const p = Player('reece');
+            expect(p)
+            const e = Player('AI');
+            const pBoard = Gameboard();
+            e.setOpponent(p);
+            e.sendShot(0, 0);
+            expect(e.shoot(0,0)).toEqual(false);
+        });
+        test('Hits register', () => {
+            const p = Player('reece');
+            expect(p)
+            const e = Player('AI');
+            const pBoard = Gameboard();
+            pBoard.place('test', 0, 0);
+            e.setOpponent(p);
+            expect(e.shoot(0,0)).toEqual('hit');
+        });
+        test('Misses register', () => {
+            const p = Player('reece');
+            expect(p)
+            const e = Player('AI');
+            const pBoard = Gameboard();
+            pBoard.place('test', 1, 1);
+            e.setOpponent(p);
+            expect(e.shoot(0,0)).toEqual('miss');
+        }); 
     });
 });
