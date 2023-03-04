@@ -11,9 +11,15 @@ const Player = (playerName) => {
     const getName = () => {
         return self.name;
     }
-    const setOpponent = (opp) => {
+    const setOpponent = (opp, player = false) => {
         self.opponent = opp;
+        if (player && !opp.getOpponent()) {
+            opp.setOpponent(player);
+        }
         return opp.getName();
+    }
+    const getOpponent = () => {
+        return self.opponent;
     }
     const setBoard = (board) => {
         self.board = board;
@@ -27,24 +33,38 @@ const Player = (playerName) => {
         return self.oppBoard;
     }
     const getEnemyBoard = () => {
-        if (!self.oppBoard) {
-            return setEnemyBoard(self.opponent.getBoard());
-        }
-        return self.oppBoard; 
+        return self.oppBoard ?? setEnemyBoard(self.opponent.getBoard());
     }
     const checkShot = (x, y) => {
-        const board = getEnemyBoard(self.opponent);
+        const board = getEnemyBoard();
         const pastShots = board.getShotsReceived();
+        if (
+            y < 0 || //too far up
+            x < 0 || //too far left
+            y > 9 || //too low also
+            x > 9 // too far to the right
+        ) {
+            return false;
+        }
         if (pastShots.indexOf(`${x} ${y}`) == -1) {
             return true;
         }
         return false;
     }
     const shoot = (x, y) => {
-        const board = getEnemyBoard(self.opponent);
-        //const positions = board.getPositions();
+        const board = getEnemyBoard();
+        let result;
+        if (checkShot(x, y)) {
+            result = board.receiveAttack(x, y)
+        } else {
+            return false;
+        }
+        if (result == true) {
+            return 'hit';
+        }
+        return 'miss';
     }
-    return {getName, getBoard, getEnemyBoard, setBoard, setEnemyBoard, setOpponent, checkShot, shoot}
+    return {getName, getBoard, getEnemyBoard, setBoard, setEnemyBoard, setOpponent, getOpponent, checkShot, shoot};
 };
 
 export default Player;

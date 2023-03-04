@@ -101,7 +101,7 @@ const Gameboard = () => {
         }
         shotsReceived.push(`${x} ${y}`);
         const mark = positions[y][x];
-        if (mark == null) {
+        if (mark === null) {
             return {miss: [x, y]};
         }
         return playerShips[mark].hit()
