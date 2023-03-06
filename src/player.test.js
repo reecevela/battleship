@@ -49,21 +49,39 @@ describe('Player factory', () => {
             p.shoot(0,0);
             expect(eBoard.allSunk()).toBe(true);
         });
-        test('Player can sink a ship on a board', () => {
-            const p = Player('reece');
-            const e = Player('test');
-            const eBoard = Gameboard();
-            e.setBoard(eBoard);
-            p.setOpponent(e);
-            //expect(p).toBe('tested');
-        });
         test('AI Player makes shots by itself', () => {
             const p = Player('reece');
-            //expect(p).toBe('tested');
+            const ai = Player('AI');
+            const pBoard = Gameboard();
+            const eBoard = Gameboard();
+            p.setBoard(pBoard);
+            ai.setBoard(eBoard);
+            p.setOpponent(ai, p);
+            pBoard.place('test', 0, 0);
+            eBoard.place('test', 0, 0);
+            p.shoot(1, 1);
+            p.passTurn();
+            expect(ai.getPastShots().length).toBe(1);
         });
         test('AI Player doesn\'t repeat shots on the same spot', () => {
             const p = Player('reece');
-            //expect(p).toBe('tested');
+            const ai = Player('AI');
+            const pBoard = Gameboard();
+            const eBoard = Gameboard();
+            p.setBoard(pBoard);
+            ai.setBoard(eBoard);
+            p.setOpponent(ai, p);
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    p.shoot(i, j);
+                    p.passTurn();
+                }
+            }
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    expect(ai.getPastShots().find([i, j])).not.toBeFalsy();
+                }
+            }
         });
         test('Player will not shoot in same spot multiple times', () => {
             const p = Player('reece');
