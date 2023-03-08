@@ -1,7 +1,5 @@
 import Player from "./player";
 import Gameboard from "./gameboard";
-import { describe } from "node:test";
-import { pbkdf2 } from "crypto";
 
 describe('Player factory', () => {
     describe('Initial setup', () => {
@@ -21,7 +19,7 @@ describe('Player factory', () => {
         });
         test('Get opponent board works without setEnemyBoard', () => {
             const p = Player('reece');
-            const e = Player('AI');
+            const e = Player('john');
             const eBoard = Gameboard();
             e.setBoard(eBoard);
             p.setOpponent(e);
@@ -49,25 +47,19 @@ describe('Player factory', () => {
             p.shoot(0,0);
             expect(eBoard.allSunk()).toBe(true);
         });
-        test('Player can sink a ship on a board', () => {
+        test('Player can sink a ship on a board without setenemyboard', () => {
             const p = Player('reece');
             const e = Player('test');
             const eBoard = Gameboard();
             e.setBoard(eBoard);
-            p.setOpponent(e);
-            //expect(p).toBe('tested');
-        });
-        test('AI Player makes shots by itself', () => {
-            const p = Player('reece');
-            //expect(p).toBe('tested');
-        });
-        test('AI Player doesn\'t repeat shots on the same spot', () => {
-            const p = Player('reece');
-            //expect(p).toBe('tested');
+            p.setOpponent(e, p);
+            eBoard.place('test', 0, 0);
+            p.shoot(0,0);
+            expect(eBoard.allSunk()).toBe(true);
         });
         test('Player will not shoot in same spot multiple times', () => {
             const p = Player('reece');
-            const e = Player('AI');
+            const e = Player('john');
             const pBoard = Gameboard();
             p.setBoard(pBoard);
             e.setOpponent(p);
@@ -76,7 +68,7 @@ describe('Player factory', () => {
         });
         test('Hits register', () => {
             const p = Player('reece');
-            const e = Player('AI');
+            const e = Player('test');
             const pBoard = Gameboard();
             p.setBoard(pBoard);
             pBoard.place('test', 0, 0);
@@ -85,12 +77,54 @@ describe('Player factory', () => {
         });
         test('Misses register', () => {
             const p = Player('reece');
-            const e = Player('AI');
+            const e = Player('test');
             const pBoard = Gameboard();
             p.setBoard(pBoard);
             pBoard.place('test', 1, 1);
             e.setOpponent(p);
             expect(e.shoot(0,0)).toEqual('miss');
         }); 
+    });
+    describe('Turn functions', () => { 
+        test('Active turn works', () => {
+            const p = Player('reece');
+            const e = Player('john');
+            const pBoard = Gameboard();
+            const eBoard = Gameboard();
+            p.setBoard(pBoard);
+            e.setBoard(eBoard);
+            p.setOpponent(e, p);
+            // initialization done
+            p.setActive(false);
+            expect(p.getActive()).toEqual(false);
+            p.setActive();
+            expect(p.getActive()).toEqual(true);
+        });
+        test('Passes turn works', () => {
+            const p = Player('reece');
+            const e = Player('john');
+            const pBoard = Gameboard();
+            const eBoard = Gameboard();
+            p.setBoard(pBoard);
+            e.setBoard(eBoard);
+            p.setOpponent(e, p);
+            p.setActive();
+            p.passTurn();
+            expect(e.getActive()).toEqual(true);
+        });
+    });
+    describe('AI Functions', () => { 
+        test('shoots when turn is passed', () => {
+            const p = Player('reece');
+            const e = Player('AI');
+            const pBoard = Gameboard();
+            const eBoard = Gameboard();
+            p.setBoard(pBoard);
+            e.setBoard(eBoard);
+            p.setOpponent(e, p);
+            p.setActive();
+            p.passTurn();
+            expect(e.getPastShots().length).toEqual(1);
+        });
     });
 });

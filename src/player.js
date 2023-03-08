@@ -8,6 +8,7 @@ const Player = (playerName) => {
         opponent: null,
         oppBoard: null
     }
+    // OPP INIT FUNCTIONS
     const getName = () => {
         return self.name;
     }
@@ -21,6 +22,7 @@ const Player = (playerName) => {
     const getOpponent = () => {
         return self.opponent;
     }
+    // BOARD INIT FUNCTIONS
     const setBoard = (board) => {
         self.board = board;
         return board;
@@ -35,6 +37,7 @@ const Player = (playerName) => {
     const getEnemyBoard = () => {
         return self.oppBoard ?? setEnemyBoard(self.opponent.getBoard());
     }
+    // SHOT FUNCTIONS
     const checkShot = (x, y) => {
         const board = getEnemyBoard();
         const pastShots = board.getShotsReceived();
@@ -64,7 +67,22 @@ const Player = (playerName) => {
         }
         return 'miss';
     }
-    return {getName, getBoard, getEnemyBoard, setBoard, setEnemyBoard, setOpponent, getOpponent, checkShot, shoot};
+    //TURN FUNCTIONS
+    const getActive = () => {
+        return self.active;
+    }
+    const setActive = (bool = true) => {
+        self.active = bool;
+    }
+    
+    //AI FUNCTIONS
+
+    return {
+        getName, setOpponent, getOpponent,
+        getBoard, getEnemyBoard, setBoard, setEnemyBoard, 
+        checkShot, shoot,
+        getActive, setActive
+    };
 };
 
 export default Player;
