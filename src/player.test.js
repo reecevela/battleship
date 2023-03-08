@@ -56,6 +56,7 @@ describe('Player factory', () => {
             eBoard.place('test', 0, 0);
             p.shoot(0,0);
             expect(eBoard.allSunk()).toBe(true);
+        });
         test('AI Player makes shots by itself', () => {
             const p = Player('reece');
             const ai = Player('AI');
