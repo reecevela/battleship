@@ -6,7 +6,9 @@ const Player = (playerName) => {
         name: playerName,
         board: null,
         opponent: null,
-        oppBoard: null
+        oppBoard: null,
+        pastShots: [],
+        availableShots: []
     }
     // OPP INIT FUNCTIONS
     const getName = () => {
@@ -38,6 +40,9 @@ const Player = (playerName) => {
         return self.oppBoard ?? setEnemyBoard(self.opponent.getBoard());
     }
     // SHOT FUNCTIONS
+    const recordShot = (x, y) => {
+        self.pastShots.push(`${x} ${y}`);
+    }
     const checkShot = (x, y) => {
         const board = getEnemyBoard();
         const pastShots = board.getShotsReceived();
@@ -62,10 +67,14 @@ const Player = (playerName) => {
         } else {
             return false;
         }
+        recordShot(x, y);
         if (result == true) {
             return 'hit';
         }
         return 'miss';
+    }
+    const getPastShots = () => {
+        return self.pastShots;
     }
     //TURN FUNCTIONS
     const getActive = () => {
@@ -74,14 +83,50 @@ const Player = (playerName) => {
     const setActive = (bool = true) => {
         self.active = bool;
     }
-    
+    const passTurn = () => {
+        const opp = self.opponent;
+        if (getActive()) {
+            setActive(false);
+            opp.setActive();
+            opp.receiveTurn();
+        }
+    }
+    let receiveTurn = () => {
+        return;
+    }
     //AI FUNCTIONS
-
+    if (self.name == 'AI') {
+        const getAvailableShot = () => {
+            const takenShots = self.pastShots;
+            let availShots = [];
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    if (!takenShots.includes(`${i} ${j}`)) {
+                        availShots.push({x: i, y: j});
+                    }
+                }
+            }
+            const randomAvailableShotIndex = Math.floor(Math.random() * availShots.length);
+            const shotToTake = availShots[randomAvailableShotIndex];
+            return shotToTake;
+        }
+        receiveTurn = () => {
+            const shot = getAvailableShot();
+            shoot(shot.x, shot.y);
+            passTurn();
+        }
+        return {
+            getName, setOpponent, getOpponent,
+            getBoard, getEnemyBoard, setBoard, setEnemyBoard, 
+            recordShot, checkShot, shoot, getPastShots, getAvailableShot,
+            getActive, setActive, passTurn, receiveTurn
+        };
+    }
     return {
         getName, setOpponent, getOpponent,
         getBoard, getEnemyBoard, setBoard, setEnemyBoard, 
-        checkShot, shoot,
-        getActive, setActive
+        recordShot, checkShot, shoot, getPastShots,
+        getActive, setActive, passTurn, receiveTurn
     };
 };
 

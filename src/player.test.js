@@ -87,7 +87,7 @@ describe('Player factory', () => {
             }
             for (let i = 0; i < 10; i++) {
                 for (let j = 0; j < 10; j++) {
-                    expect(ai.getPastShots().find([i, j])).not.toBeFalsy();
+                    expect(ai.getPastShots().indexOf(`${i} ${j}`)).not.toBe(-1);
                 }
             }
         });
